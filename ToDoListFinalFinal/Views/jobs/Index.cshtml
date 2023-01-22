@@ -1,0 +1,88 @@
+﻿@model IEnumerable<ToDoListFinalFinal.Data.job>
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> userManager
+
+    
+
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="text-light">job manager</h1>
+
+<p>
+    <a  asp-action="Create"><button class = "btn-light">Create New</button></a>
+</p>
+<dir class="d-flex flex-row mb-12 text-light">
+    @for (int i = 0; i < 3; i++)
+    {
+        <table class="col" border="1" aria-expanded="true">
+            <thead>
+                <tr>
+                    @if (i == 0)
+                    {
+                        <th>To Do List</th>
+                    }
+                    @if (i == 1)
+                    {
+                        <th>Doing</th>
+                    }
+                    @if (i == 2)
+                    {
+                        <th>Done</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    @if (item.owner == (IdentityUser)await userManager.FindByEmailAsync(User.Identity.Name))
+                    {
+                        @if (item.state == i)
+                        {
+                            <tr class="border-1">
+                                <th>
+                                    <div style="width: 10rem;" class="overflow-auto">@Html.DisplayFor(modelItem => item.name)</div>
+                                    
+                                </th>
+                                <td>
+                                    <div style="width: 10rem;" class="overflow-auto">@Html.DisplayFor(modelItem => item.description)</div>
+                                        @*<div class="panel-body">@Html.Raw(item.description.Substring(0, 200))</div>*@
+                                </td>
+                                <td>
+                                    <button class="btn btn-success btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                                @if (i == 0)
+                                                {
+                                                <a asp-action="stateUpdate" asp-route-id="@item.id"><button style="width: 10rem;" class="btn-primary">start doing</button></a>
+                                                }
+                                                @if (i == 1)
+                                                {
+                                                <a asp-action="stateUpdate" asp-route-id="@item.id"><button style="width: 10rem;" class="btn-primary">mark as done</button></a>
+                                                }
+                                                @if (i == 2)
+                                                {
+                                                <a asp-action="stateUpdate" asp-route-id="@item.id"><button style="width: 10rem;" class="btn-primary">redo</button></a>
+                                                }
+                                        </li>
+                                        <li><a asp-action="Edit" asp-route-id="@item.id"><button style="width: 10rem;" class="btn-primary">Edit</button></a></li>
+                                        <li><a asp-action="Details" asp-route-id="@item.id"><button style="width: 10rem;" class="btn-primary">Details</button></a></li>
+                                        <li><a asp-action="Delete" asp-route-id="@item.id"><button style="width: 10rem;" class="btn-danger">Delete</button></a></li>
+                                    </ul>
+
+
+
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    }
+</dir>
